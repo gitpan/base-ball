@@ -1,0 +1,16 @@
+Build.PL
+Changes
+MANIFEST
+META.yml # Will be created by "make dist"
+Makefile.PL
+README
+lib/base/ball.pm
+t/00.load.t
+t/perlcritic.t
+t/pod-coverage.t
+t/pod.t
+t/Foo.pm
+t/Foo/Baz.pm
+t/Foo/Bar.pm
+t/Foo/Bar/Wop.pm
+t/Foo/Zip/Wap.pm
