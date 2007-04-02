@@ -4,18 +4,21 @@ use strict;
 use warnings;
 use File::Spec;
 
-use version;our $VERSION = qv('0.0.1');
+use version;our $VERSION = qv('0.0.2');
 
 require base;
 
 sub import {
     shift;
 
-    return if !@_; # so they can use it by itself, and call its import method at will...
+    my $caller = caller(0);
 
     PKG:
     for my $pkg ( @_ ) {
-	    base->import( $pkg );
+	    eval qq{
+            package $caller;
+            base->import( '$pkg' );
+        };
 
 	    my $file = $pkg;
 	    $file    = File::Spec->catdir( split( '::', $file ) );
@@ -33,7 +36,13 @@ sub import {
             for my $pm ( @pms ) {
 	            my $ns = $pm;
 	            $ns    =~ s{\.pm}{};
-                base::ball->import( $pkg . '::' . $ns );
+	
+                my $imp = $pkg . '::' . $ns;
+	
+	            eval qq{
+	                package $caller;
+	                base::ball->import( '$imp' );
+	            };
             }
         }
     }
@@ -49,7 +58,7 @@ base::ball - "b" all the namespaces under the given one(s)
 
 =head1 VERSION
 
-This document describes base::ball version 0.0.1
+This document describes base::ball version 0.0.2
 
 =head1 SYNOPSIS
 
