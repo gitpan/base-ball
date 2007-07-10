@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use File::Spec;
 
-use version;our $VERSION = qv('0.0.3');
+use version;our $VERSION = qv('0.0.4');
 
 require base;
 
@@ -75,7 +75,7 @@ base::ball - "b" all the namespaces under the given one(s)
 
 =head1 VERSION
 
-This document describes base::ball version 0.0.3
+This document describes base::ball version 0.0.4
 
 =head1 SYNOPSIS
 
@@ -135,7 +135,7 @@ to replace multiple, maintenance intensive, 'use base' lines with a single, main
 
 =head2 IF THIS MODULE SCARES YOU
 
-Some folks are scares of this module. The funny name confused them (its a joke, see 'NAME' for an explanation), the magic seems to magical (look at the POD and the source, there's not much to it), it does evil stuff, etc...
+Some folks are scared of this module. The funny name confused them (its a joke, see 'NAME' for an explanation), the magic seems to magical (look at the POD and the source, there's not much to it), it does evil stuff, etc...
 
 I think the main "fear" trying to be expressed is this: "You can use this module to mis-use inheritance". 
 
@@ -143,7 +143,7 @@ So I urge you: don't use it (or anything else) to mis-use anything
 
 Yes, there are things it should not be used for ( See 'DO NOT USE THIS MODULE IF' ) but at the same time it does have a very practical and beneficial place ( See 'ONLY USE THIS MODULE IF' ).
 
-With great power comes great responsibility: so read the POD, don't misuse inheritance, and use whatever does what you need (like <Module::Pluggable> or L<Moose> for example).
+With great power comes great responsibility: so read the POD, don't misuse inheritance, and use whatever does what you need (like L<Module::Pluggable> or L<Moose> for example).
 
 =begin comment
 
@@ -163,7 +163,7 @@ base::ball throws no warnings or errors itself
 
 base::ball requires no configuration files. It uses internally a local()ized $ENV{'base::ball::sort'} but it isn't left after the use()
 
-Setting $ENV{'base::ball::sort'} directly is kinda dumb (since use() is likley donebefore it'll be set) but knock yourself out if you really want to.
+Setting $ENV{'base::ball::sort'} directly is kinda dumb (since use() is likley done before it'll be set) but knock yourself out if you really want to.
 
 =head1 DEPENDENCIES
 

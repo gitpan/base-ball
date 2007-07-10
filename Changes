@@ -1,5 +1,8 @@
 Revision history for base-ball
 
+0.0.4 Mon Jul  9 22:57:25  2007
+      - minor POD fixes
+
 0.0.3  Tue Apr  3 22:03:30 2007
        - allow last arg to be a sorting coderef to control order any derived NSs are use base'd
        pass on base.pm failures 
