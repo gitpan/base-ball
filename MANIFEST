@@ -13,4 +13,5 @@ t/Foo.pm
 t/Foo/Baz.pm
 t/Foo/Bar.pm
 t/Foo/Bar/Wop.pm
+t/Foo/Bar/Zap.pm
 t/Foo/Zip/Wap.pm

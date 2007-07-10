@@ -1,5 +1,10 @@
 Revision history for base-ball
 
+0.0.3  Tue Apr  3 22:03:30 2007
+       - allow last arg to be a sorting coderef to control order any derived NSs are use base'd
+       pass on base.pm failures 
+       - Update POD to encourage proper use
+
 0.0.2  Sun Apr  1 08:48:22 2007
        Fixed mis-package base. No !@_ line (spuriouse). TODO note in 00.load.t
 

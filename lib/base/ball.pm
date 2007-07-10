@@ -4,14 +4,29 @@ use strict;
 use warnings;
 use File::Spec;
 
-use version;our $VERSION = qv('0.0.2');
+use version;our $VERSION = qv('0.0.3');
 
 require base;
 
 sub import {
     shift;
 
+    return if !@_;
+
     my $caller = caller(0);
+    local $Carp::Level = ( $Carp::Level || 0 ) + 1;
+
+    local $ENV{'base::ball::sort'} = defined $ENV{'base::ball::sort'} && ref $ENV{'base::ball::sort'} eq 'CODE' 
+        ? $ENV{'base::ball::sort'} 
+        : sub {
+	        my ($pkg, @pms) = @_;
+	        return sort { $a cmp $b } @pms;	
+          }
+        ;
+
+    if( ref $_[-1] eq 'CODE' ) {
+        $ENV{'base::ball::sort'} = pop @_;
+    }
 
     PKG:
     for my $pkg ( @_ ) {
@@ -19,6 +34,7 @@ sub import {
             package $caller;
             base->import( '$pkg' );
         };
+        Carp::croak $@ if $@; # die for base()
 
 	    my $file = $pkg;
 	    $file    = File::Spec->catdir( split( '::', $file ) );
@@ -33,16 +49,17 @@ sub import {
             next PKG if !@pms;
 
             PMS:
-            for my $pm ( @pms ) {
+            for my $pm ( $ENV{'base::ball::sort'}->( $pkg, @pms) ) {
 	            my $ns = $pm;
 	            $ns    =~ s{\.pm}{};
 	
                 my $imp = $pkg . '::' . $ns;
-	
+
 	            eval qq{
 	                package $caller;
 	                base::ball->import( '$imp' );
 	            };
+	            Carp::croak $@ if $@; # die for base()
             }
         }
     }
@@ -58,7 +75,7 @@ base::ball - "b" all the namespaces under the given one(s)
 
 =head1 VERSION
 
-This document describes base::ball version 0.0.2
+This document describes base::ball version 0.0.3
 
 =head1 SYNOPSIS
 
@@ -85,7 +102,7 @@ Utils/Data.pm, Utils/UI.pm, Utils/Sys.pm, Utils/Sys/Unix.pm, Utils/Sys/Win32.pm,
 
 then the synopsis is correct.
 
-Note it does not follow directories who do not firts have a .pm, in other words:
+Note it does not follow directories who do not first have a .pm, in other words:
 
 Foo/Utils/Whatever/Fiddle.pm will no get Foo:Utils::Whatever::Fiddle as base 
 unless Foo/Utils/Whatever.pm exists (and therefore Foo::Utils::Whatever is a base)
@@ -95,6 +112,38 @@ This is by design for good reasons and given enough popular demand may lead to s
 =head1 INTERFACE
 
 pass one or more name spaces to the use() call.
+
+If the last item in the arguments is a coderef, that will be used to sort the .pm's from readdir.
+
+If not then this is used instead:
+
+  sub {
+      my ($pkg, @pms) = @_;
+      return sort { $a cmp $b } @pms;	
+  }
+
+=head1 DO NOT USE THIS MODULE IF:
+
+You are trying to make a god class. They are bad. L<http://en.wikipedia.org/wiki/God_object>
+
+You are misusing IS-A inheritance
+
+=head1 ONLY USE THIS MODULE IF:
+
+You have a project where you organize an object's methods into individual "utility" modules and want 
+to replace multiple, maintenance intensive, 'use base' lines with a single, maintenance free use base::ball line.
+
+=head2 IF THIS MODULE SCARES YOU
+
+Some folks are scares of this module. The funny name confused them (its a joke, see 'NAME' for an explanation), the magic seems to magical (look at the POD and the source, there's not much to it), it does evil stuff, etc...
+
+I think the main "fear" trying to be expressed is this: "You can use this module to mis-use inheritance". 
+
+So I urge you: don't use it (or anything else) to mis-use anything
+
+Yes, there are things it should not be used for ( See 'DO NOT USE THIS MODULE IF' ) but at the same time it does have a very practical and beneficial place ( See 'ONLY USE THIS MODULE IF' ).
+
+With great power comes great responsibility: so read the POD, don't misuse inheritance, and use whatever does what you need (like <Module::Pluggable> or L<Moose> for example).
 
 =begin comment
 
@@ -111,19 +160,18 @@ pass one or more name spaces to the use() call.
 base::ball throws no warnings or errors itself
 
 =head1 CONFIGURATION AND ENVIRONMENT
-  
-base::ball requires no configuration files or environment variables.
 
+base::ball requires no configuration files. It uses internally a local()ized $ENV{'base::ball::sort'} but it isn't left after the use()
+
+Setting $ENV{'base::ball::sort'} directly is kinda dumb (since use() is likley donebefore it'll be set) but knock yourself out if you really want to.
 
 =head1 DEPENDENCIES
 
 L<File::Spec>
 
-
 =head1 INCOMPATIBILITIES
 
 None reported.
-
 
 =head1 BUGS AND LIMITATIONS
 
